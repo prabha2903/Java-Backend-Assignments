@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "Product Inventory API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "productId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Add Product",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Wireless Mouse\",\n  \"category\": \"Electronics\",\n  \"price\": 799.50,\n  \"quantity\": 50,\n  \"supplierName\": \"Logitech India\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Add Product - Duplicate Name (expect 409)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Wireless Mouse\",\n  \"category\": \"Electronics\",\n  \"price\": 899.00,\n  \"quantity\": 10,\n  \"supplierName\": \"Logitech India\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Add Product - Negative Price (expect 400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bad Price Item\",\n  \"category\": \"Misc\",\n  \"price\": -10,\n  \"quantity\": 5,\n  \"supplierName\": \"Test Supplier\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Add Product - Negative Quantity (expect 400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/products",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bad Quantity Item\",\n  \"category\": \"Misc\",\n  \"price\": 10,\n  \"quantity\": -5,\n  \"supplierName\": \"Test Supplier\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Update Product",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/products/{{productId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Wireless Mouse Pro\",\n  \"category\": \"Electronics\",\n  \"price\": 999.00,\n  \"quantity\": 40,\n  \"supplierName\": \"Logitech India\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Update Product - Not Found (expect 404)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/products/9999",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ghost Item\",\n  \"category\": \"Misc\",\n  \"price\": 10,\n  \"quantity\": 1,\n  \"supplierName\": \"Nobody\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Product By ID",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/{{productId}}" }
+    },
+    {
+      "name": "Get Product By ID - Not Found (expect 404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/9999" }
+    },
+    {
+      "name": "Get All Products (paginated, default)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products?page=0&size=5" }
+    },
+    {
+      "name": "Get All Products - Sort by price desc",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products?page=0&size=5&sortBy=price&direction=desc" }
+    },
+    {
+      "name": "Get All Products - Sort by name asc",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products?page=0&size=5&sortBy=name" }
+    },
+    {
+      "name": "Get All Products - Keyword search",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products?keyword=mouse" }
+    },
+    {
+      "name": "Search By Category",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/category/Electronics" }
+    },
+    {
+      "name": "Search By Category - No Match (empty result)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/category/Nonexistent" }
+    },
+    {
+      "name": "Search By Price Range",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/price?min=100&max=1000" }
+    },
+    {
+      "name": "Search By Price Range - Invalid range (expect 400)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/price?min=1000&max=100" }
+    },
+    {
+      "name": "Low Stock Products",
+      "request": { "method": "GET", "url": "{{baseUrl}}/products/low-stock?threshold=10" }
+    },
+    {
+      "name": "Delete Product",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/products/{{productId}}" }
+    },
+    {
+      "name": "Delete Product - Not Found (expect 404)",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/products/9999" }
+    }
+  ]
+}
